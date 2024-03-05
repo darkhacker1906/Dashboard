@@ -112,27 +112,27 @@ function SigninPage() {
           {errors.password && touched.password && (
             <Error error={errors.password} />
           )}
-          <div className="flex justify-start mt-2  relative">
+          <div className="flex justify-start mt-2  relative w-full">
             <button
               type="submit"
-              className="bg-gradient-to-r from-cyan-500 to-blue-500 ... p-2  text-gray-50 rounded-md"
+              className="bg-gradient-to-r from-cyan-500 to-blue-500 ... p-2  text-gray-50 rounded-md w-full"
             >
               Sign in
             </button>
             {loading && (
-              <div className="absolute ">
+              <div className="absolute w-full flex justify-center">
                 <CircularProgress sx={{ color: "white" }} />
               </div>
             )}
           </div>
           <Button fullWidth onClick={handleGoogleSignIn} sx={{display:'flex',alignItems:"center",mb:1,border:"1px solid #D1D5DB",borderRadius:3,mt:1 }}>
-            Sign in with
+            Sign in with google
           <FcGoogle style={{fontSize:"25px",cursor:"pointer"}} />
           </Button>
          
         </form>
         <div className=" flex  gap-1">
-          Not have account
+          Don't have account
           <NavLink
             to={"/signup"}
             style={{ fontWeight: "500", color: "#2993EB" }}
