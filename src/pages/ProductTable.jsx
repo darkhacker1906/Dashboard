@@ -1,42 +1,51 @@
-import { collection, deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
 import { db } from "../Firebase";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import "./productTable.css";
+import DeleteModal from "../components/DeleteModal";
+import { CircularProgress, Typography } from "@mui/material";
+import EditModal from "../components/EditModal";
 
 function ProductTable() {
   const [products, setProducts] = useState([]);
   const [id, setId] = useState("");
+  const [loading,setLoading]=useState(false);
+  const [deleteOpen,setDeleteOpen]=useState(false);
+  const handleDeleteClose = () => setDeleteOpen(false);
+  const[editOpen,setEditOpen]=useState(false);
+  const handleEditClose=()=>{setEditOpen(false)};
+  const [editData,setEditData]=useState({});
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          product: doc.data().product,
-          model: doc.data().model,
-          price: doc.data().price,
-        }));
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, [id]);
+    setLoading(true);
+    const unsubscribe = onSnapshot(collection(db, "products"), (querySnapshot) => {
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        product: doc.data().product,
+        model: doc.data().model,
+        price: doc.data().price,
+      }));
+      setProducts(data);
+      setLoading(false);
+    });
+  
+    return unsubscribe;
+  }, []);
 
   const handleDelete = async (id) => {
-    const userDoc = doc(db, "products", id);
-    await deleteDoc(userDoc);
     setId(id);
+    setDeleteOpen(true);
   };
   const handleUpdate=async(data)=>{
-  //  const userDoc=(da)
+    setEditData(data);
+    setEditOpen(true);
   }
   return (
     <div>
-      <table>
+      {
+        loading ?<Typography sx={{textAlign:"center"}}><CircularProgress/></Typography> :  
+        <table>
         <thead style={{ background: "#65659D" }}>
           <tr>
             <th>Product</th>
@@ -56,14 +65,19 @@ function ProductTable() {
                   color="red"
                   fontSize={22}
                   onClick={() => handleDelete(data.id)}
+                  
+                  style={{ cursor: "pointer" }}
                 />{" "}
                 <FaEdit onClick={()=>handleUpdate(data)}
-                 color="#65659D" fontSize={22} />
+                 color="#65659D" fontSize={22} style={{ cursor: "pointer" }} />
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>  }
+     
+      <DeleteModal deleteOpen={deleteOpen}setDeleteOpen={setDeleteOpen}handleDeleteClose={handleDeleteClose} id={id} setProducts={setProducts}/>
+      <EditModal editOpen={editOpen} setEditOpen={setEditOpen}handleEditClose={handleEditClose} editData={editData}/>
     </div>
   );
 }

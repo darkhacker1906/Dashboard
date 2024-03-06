@@ -5,7 +5,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../Firebase";
@@ -15,26 +15,31 @@ export default function AddProductsModal({
   setProductOpen,
   productClose,
 }) {
+  const [loading, setLoading] = React.useState(false);
   const initialValues = {
     product: "",
     model: "",
     price: "",
   };
 
-  const { values,handleChange, resetForm, handleSubmit } = useFormik({
+  const { values, handleChange, resetForm, handleSubmit } = useFormik({
     initialValues: initialValues,
-    onSubmit: async(values) => {
-        try {
-            const docRef = await addDoc(collection(db, "products"), {
-                product: values.product,
-                model: values.model,
-                price: values.price
-            });
-            console.log("Document written with ID: ", docRef.id);
-            resetForm();
-        } catch (e) {
-            console.error("Error adding document: ", e);
-        }
+    onSubmit: async (values) => {
+      setLoading(true);
+      try {
+        const docRef = await addDoc(collection(db, "products"), {
+          product: values.product,
+          model: values.model,
+          price: values.price,
+        });
+        console.log("Document written with ID: ", docRef.id);
+        resetForm();
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      } finally {
+        setLoading(false);
+        productClose();
+      }
       resetForm();
     },
   });
@@ -90,12 +95,35 @@ export default function AddProductsModal({
               sx={{ display: "flex", justifyContent: "center", gap: 4, mt: 2 }}
             >
               {" "}
-              <Button type="submit" variant="contained" sx={{background:"#65659D"}}>
-                Submit
-              </Button>
-              <Button variant="contained" onClick={productClose} sx={{background:"#65659D"}}>
-                Cancel
-              </Button>
+              <Box>
+                {" "}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{ position: "relative", background: "#65659D" }}
+                >
+                  Submit
+                  {loading && (
+                    <CircularProgress
+                      size={28} 
+                      sx={{
+                        position: "absolute",
+                        color:"white"
+                      }}
+                    />
+                  )}
+                </Button>
+              </Box>
+              <Box>
+                {" "}
+                <Button
+                  variant="contained"
+                  onClick={productClose}
+                  sx={{ background: "#65659D" }}
+                >
+                  Cancel
+                </Button>
+              </Box>
             </Box>
           </form>
         </DialogContentText>
