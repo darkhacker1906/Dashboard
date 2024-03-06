@@ -46,7 +46,7 @@ function SignupPage() {
   });
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-r from-green-400 to-blue-500 flex justify-center items-center">
+    <div className="w-screen h-screen bg-gradient-to-r from-cyan-500 to-blue-500 ... flex justify-center items-center">
       <div className="w-1/3 h-auto bg-white flex-row gap-4 p-4 min-w-80">
         <div className="text-center font-bold text-gray-900 text-2xl">
           Sign Up
@@ -133,20 +133,22 @@ function SignupPage() {
           {errors.confirm_password && touched.confirm_password && (
             <Error error={errors.confirm_password} />
           )}
-          <div className="flex justify-center mt-2 relative">
+
+          <div className="flex justify-center mt-2 relative w-full">
             <button
               type="submit"
-              className="bg-gradient-to-r from-green-400 to-blue-500 p-2 rounded-sm  text-gray-50"
+              className="bg-gradient-to-r from-cyan-500 to-blue-500 ... p-2 rounded-md  text-gray-50 w-full"
             >
               Submit
             </button>
             {loading && (
-              <div className="absolute ">
+              <div className="absolute">
                 <CircularProgress sx={{ color: "white" }} />
               </div>
             )}
           </div>
         </form>
+
         <NavLink to={"/"}>
           <p className="text-blue-500 font-medium">Sign in</p>
         </NavLink>
