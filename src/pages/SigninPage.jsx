@@ -4,15 +4,30 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Error from "../Error";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth,provider} from "../Firebase";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { signInSchema } from "../schemas";
 import { signInWithPopup } from "firebase/auth";
 import { FcGoogle } from "react-icons/fc";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
+import EmailModal from "../components/EmailModal";
 
 
 function SigninPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const handleClose=()=>{
+    setOpen(false);
+  }
+  // const [openPhone,setOpenPhone]=useState(false);
+  // const handlePhoneClose=()=>{
+  //   setOpenPhone(false);
+  // }
+  const handleSigninWithPhone=()=>{
+     navigate("/phonelogin")
+  }
+
   const initialValues = {
     email: "",
     password: "",
@@ -49,20 +64,10 @@ function SigninPage() {
       resetForm();
     },
   });
-  const handleGoogleSignIn = async () => {
-    try {
-      setLoading(true);
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      localStorage.setItem("token", user.accessToken);
-      localStorage.setItem("user", JSON.stringify(user));
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-    }
-    setLoading(false);
-  };
-  
+ 
+  const handlePasswordChange=()=>{
+    setOpen(true);
+  }
   return (
     <div className="w-screen h-screen bg-gradient-to-r from-cyan-500 to-blue-500 ... flex justify-center items-center ">
       <div className="w-1/3 h-auto bg-white flex-row gap-4 p-7 min-w-80">
@@ -93,7 +98,7 @@ function SigninPage() {
           <div>
             <label
               htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white mt-3"
             >
               Password
             </label>
@@ -111,7 +116,7 @@ function SigninPage() {
           {errors.password && touched.password && (
             <Error error={errors.password} />
           )}
-          <div className="flex justify-start mt-2  relative w-full">
+          <div className="flex justify-start mt-3  relative w-full mb-3">
             <button
               type="submit"
               className="bg-gradient-to-r from-cyan-500 to-blue-500 ... p-2  text-gray-50 rounded-md w-full"
@@ -124,12 +129,16 @@ function SigninPage() {
               </div>
             )}
           </div>
-          <Button fullWidth onClick={handleGoogleSignIn} sx={{display:'flex',alignItems:"center",mb:1,border:"1px solid #D1D5DB",borderRadius:3,mt:1 }}>
-            Sign in with google
-          <FcGoogle style={{fontSize:"25px",cursor:"pointer"}} />
-          </Button>
-         
         </form>
+        <Box sx={{display:"flex",justifyContent:"space-between"}}>
+          <div><Typography onClick={handleSigninWithPhone} sx={{ '&:hover': {
+      cursor:"pointer"
+    },}}>Signin with phone</Typography></div>
+          <div><Typography onClick={handlePasswordChange} sx={{ '&:hover': {
+      cursor:"pointer"
+    },}}>Forget Password</Typography></div>
+       
+        </Box>
         <div className=" flex  gap-1">
           Don't have account
           <NavLink
@@ -140,6 +149,7 @@ function SigninPage() {
           </NavLink>
         </div>
       </div>
+      <EmailModal open={open} setOpen={setOpen} handleClose={handleClose}/>
     </div>
   );
 }
