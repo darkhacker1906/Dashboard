@@ -51,7 +51,6 @@ function SigninPage() {
   });
   const handleGoogleSignIn = async () => {
     try {
-      console.log('try ');
       setLoading(true);
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
