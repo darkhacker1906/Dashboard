@@ -131,7 +131,7 @@ function SigninPage() {
           </div>
         </form>
         <Box sx={{display:"flex",justifyContent:"space-between"}}>
-          <div><Typography onClick={handleSigninWithPhone} sx={{ '&:hover': {
+          <div><Typography onClick={handleSigninWithPhone} sx={{ color:"#2993EB",fontWeight:"500",'&:hover': {
       cursor:"pointer"
     },}}>Signin with phone</Typography></div>
           <div><Typography onClick={handlePasswordChange} sx={{ '&:hover': {
