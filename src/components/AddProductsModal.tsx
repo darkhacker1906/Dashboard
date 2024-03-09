@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -10,13 +10,23 @@ import { useFormik } from "formik";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../Firebase";
 
+interface AddProductsModalProps {
+  productOpen: boolean;
+  setProductOpen: (open: boolean) => void;
+  productClose: () => void;
+}
+interface FormValues {
+  product: string;
+  model: string;
+  price: string;
+}
 export default function AddProductsModal({
   productOpen,
   setProductOpen,
   productClose,
-}) {
-  const [loading, setLoading] = React.useState(false);
-  const initialValues = {
+}: AddProductsModalProps) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const initialValues:FormValues = {
     product: "",
     model: "",
     price: "",

@@ -18,16 +18,21 @@ const style = {
   borderRadius:5,
   p: 4,
 };
+interface LogoutModalProps {
+  logoutOpen: boolean;
+  setLogoutOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleClose: () => void;
+}
 
-export default function LogoutModal({
+const LogoutModal:React.FC<LogoutModalProps>=({
   logoutOpen,
   setLogoutOpen,
   handleClose,
-}) {
+})=> {
   const navigate=useNavigate();
   const handleConfirm=()=>{
-      localStorage.clear("token");
-    localStorage.clear("user");
+      localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setLogoutOpen(false);
      navigate("/");
   }
@@ -70,3 +75,4 @@ export default function LogoutModal({
     </div>
   );
 }
+export default LogoutModal

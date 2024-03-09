@@ -21,8 +21,19 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+interface EditModalProps {
+  editOpen: boolean;
+  setEditOpen: (open: boolean) => void;
+  handleEditClose: () => void;
+  editData: {
+    product: string;
+    model: string;
+    price: string;
+    id: string;
+  };
+}
 
-export default function EditModal({ editOpen, setEditOpen, handleEditClose,editData}) {
+export default function EditModal({ editOpen, setEditOpen, handleEditClose,editData}:EditModalProps) {
   const [loading,setLoading]=React.useState(false);
   const initialValues={
     product: editData.product || "",

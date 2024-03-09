@@ -24,10 +24,15 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+interface EmailModalProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  handleClose: () => void;
+}
 
-export default function EmailModal({ open, setOpen, handleClose }) {
+export default function EmailModal({ open, setOpen, handleClose }:EmailModalProps): JSX.Element {
     const [loading,setLoading]=React.useState(false);
-  const initialValues = {
+const initialValues:{ email: string} = {
     email: "",
   };
   const { handleSubmit, values, handleBlur, handleChange, errors, touched,resetForm } =
