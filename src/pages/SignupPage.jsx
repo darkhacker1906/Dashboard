@@ -2,11 +2,12 @@ import { useFormik } from "formik";
 import React, { useState } from "react";
 import Error from "../Error";
 import { NavLink, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth,db} from "../Firebase";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, db, provider } from "../Firebase";
 import { signUpSchema } from "../schemas";
-import { CircularProgress } from "@mui/material";
-import { collection, addDoc } from "firebase/firestore"; 
+import { Button, CircularProgress } from "@mui/material";
+import { collection, addDoc } from "firebase/firestore";
+import { FcGoogle } from "react-icons/fc";
 
 function SignupPage() {
   const [loading, setLoading] = useState(false);
@@ -44,6 +45,19 @@ function SignupPage() {
       resetForm();
     },
   });
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      localStorage.setItem("token", user.accessToken);
+      localStorage.setItem("user", JSON.stringify(user));
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
+    setLoading(false);
+  };
 
   return (
     <div className="w-screen h-screen bg-gradient-to-r from-cyan-500 to-blue-500 ... flex justify-center items-center">
@@ -52,7 +66,7 @@ function SignupPage() {
           Sign Up
         </div>
         <form onSubmit={handleSubmit}>
-          <div>
+          <div className="mb-2">
             <label
               htmlFor="name"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -71,7 +85,7 @@ function SignupPage() {
             />
           </div>
           {errors.name && touched.name && <Error error={errors.name} />}
-          <div>
+          <div className="mb-2">
             <label
               htmlFor="email"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -90,7 +104,7 @@ function SignupPage() {
             />
           </div>
           {errors.email && touched.email && <Error error={errors.email} />}
-          <div>
+          <div className="mb-2">
             <label
               htmlFor="password"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -111,7 +125,7 @@ function SignupPage() {
           {errors.password && touched.password && (
             <Error error={errors.password} />
           )}
-          <div>
+          <div className="mb-2">
             <label
               htmlFor="confirm_password"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -134,7 +148,7 @@ function SignupPage() {
             <Error error={errors.confirm_password} />
           )}
 
-          <div className="flex justify-center mt-2 relative w-full">
+          <div className="flex justify-center mt-4 relative w-full">
             <button
               type="submit"
               className="bg-gradient-to-r from-cyan-500 to-blue-500 ... p-2 rounded-md  text-gray-50 w-full"
@@ -149,9 +163,29 @@ function SignupPage() {
           </div>
         </form>
 
-        <NavLink to={"/"}>
-          <p className="text-blue-500 font-medium">Sign in</p>
-        </NavLink>
+        <Button
+          fullWidth
+          onClick={handleGoogleSignIn}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            mb: 1,
+            border: "1px solid #D1D5DB",
+            borderRadius: 3,
+            mt: 1,
+            gap: 2,
+          }}
+        >
+          <FcGoogle style={{ fontSize: "25px", cursor: "pointer" }} />
+          Continue with google
+        </Button>
+        <div className="flex gap-2">
+          {" "}
+          have an account
+          <NavLink to={"/"}>
+            <p className="text-blue-500 font-medium">Sign in</p>
+          </NavLink>
+        </div>
       </div>
     </div>
   );
