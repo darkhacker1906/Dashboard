@@ -81,5 +81,4 @@ function ProductTable() {
     </div>
   );
 }
-
-export default ProductTable;
+export default ProductTable

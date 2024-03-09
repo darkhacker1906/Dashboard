@@ -1,13 +1,15 @@
 import { Box, Button, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AddProductsModal from "../components/AddProductsModal";
-import ProductTable from "./ProductTable";
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
-import { db } from "../Firebase";
 
-function Products() {
-  const [productOpen, setProductOpen] = React.useState(false);
-  const [products, setProducts] = useState([]);
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../Firebase";
+import ProductTable from "./ProductTable";
+
+function Products(): JSX.Element {
+  const [productOpen, setProductOpen] = useState<boolean>(false);
+  const [products, setProducts] = useState<any[]>([]);
+
   const productClose = () => {
     setProductOpen(false);
   };
@@ -28,6 +30,7 @@ function Products() {
     };
     fetchData();
   }, []);
+
   return (
     <Box>
       <Typography variant="h5" sx={{ textAlign: "center", mb: 3 }}>

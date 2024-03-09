@@ -20,6 +20,13 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+interface DeleteModalProps {
+  deleteOpen: boolean;
+  setDeleteOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleDeleteClose: () => void;
+  id: string;
+  setProducts: React.Dispatch<React.SetStateAction<any[]>>;
+}
 
 export default function DeleteModal({
   deleteOpen,
@@ -27,9 +34,9 @@ export default function DeleteModal({
   handleDeleteClose,
   id,
   setProducts
-}) {
+}: DeleteModalProps) {
     const [loading,setLoading]=React.useState(false);
-    const handleDelete = async (id) => {
+    const handleDelete = async (id: string) => {
         setLoading(true); 
         try {
           const userDoc = doc(db, "products", id);
